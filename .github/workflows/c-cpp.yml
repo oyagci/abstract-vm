@@ -1,0 +1,22 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+
+    - run: pip3 install --upgrade meson
+
+    - uses: BSFishy/meson-build@v1.0.2
+      with:
+        action: test
+        directory: build
