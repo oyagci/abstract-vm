@@ -7,6 +7,8 @@
 #include <string_view>
 #include <memory>
 #include <optional>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace avm {
 
@@ -52,6 +54,25 @@ namespace avm {
 
 	template <typename T>
 	using Optional = std::optional<T>;
+
+	inline constexpr std::nullopt_t NullOpt = std::nullopt;
+
+	template<
+		class Key,
+		class T,
+		class Hash = std::hash<Key>,
+		class KeyEqual = std::equal_to<Key>,
+		class Allocator = std::allocator<std::pair<const Key, T>>
+	>
+	using UnorderedMap = std::unordered_map<Key, T, Hash, KeyEqual, Allocator>;
+
+	template<
+		class Key,
+		class Hash = std::hash<Key>,
+		class KeyEqual = std::equal_to<Key>,
+		class Allocator = std::allocator<Key>
+	>
+	using UnorderedSet = std::unordered_set<Key, Hash, KeyEqual, Allocator>;
 
 	void Test();
 

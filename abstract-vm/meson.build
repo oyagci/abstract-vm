@@ -5,7 +5,10 @@ abstract_incs = [
   include_directories('src'),
   fmt_inc,
 ]
-abstract_srcs = [ 'src/abstractvm.cpp' ]
+abstract_srcs = [
+  'src/abstractvm.cpp',
+  'src/Lexer.cpp',
+]
 abstract_deps = [
   fmt_dep
 ]

@@ -2,7 +2,10 @@
 
 googletest = cmake.subproject('googletest')
 
-tests_srcs = [ 'src/main.cpp' ]
+tests_srcs = [
+  'src/main.cpp',
+  'src/lexer.cpp',
+]
 tests_incs = [
   include_directories('.'),
   include_directories('src'),
@@ -11,6 +14,7 @@ tests_incs = [
 ]
 test_deps = [
   googletest.dependency('gtest'),
+  fmt_dep
 ]
 
 exe = executable('test-abstractvm',
