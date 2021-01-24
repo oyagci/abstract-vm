@@ -1,3 +1,4 @@
+```
 S        : INSTR [NEWLINE INSTR] #
 
 INST     : push VALUE
@@ -24,3 +25,4 @@ VALUE    : int8(N)
 
 N        : [-]?[0..9]
 Z        : [-]?[0..9]+.[0..9]+
+```
