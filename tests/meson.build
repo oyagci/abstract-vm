@@ -25,3 +25,13 @@ exe = executable('test-abstractvm',
 )
 
 test('all tests', exe)
+
+operands_src = [ 'src/main.cpp', 'src/operands.cpp' ]
+operands = executable('test-operands',
+  operands_src,
+  include_directories: tests_incs,
+  link_with: abstractvm_lib,
+  dependencies: test_deps)
+
+
+test('operands', operands)

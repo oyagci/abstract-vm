@@ -9,6 +9,7 @@
 #include <optional>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 
 namespace avm {
 
@@ -32,7 +33,7 @@ namespace avm {
 
 	using String = std::basic_string<char>;
 
-	using StringView = std::basic_string_view<char>;
+	using StringView = std::string_view;
 
 	template <typename T>
 	using SharedPtr = std::shared_ptr<T>;
@@ -73,6 +74,12 @@ namespace avm {
 		class Allocator = std::allocator<Key>
 	>
 	using UnorderedSet = std::unordered_set<Key, Hash, KeyEqual, Allocator>;
+
+	template <
+		class T1,
+		class T2
+	>
+	using Pair = std::pair<T1, T2>;
 
 	void Test();
 
