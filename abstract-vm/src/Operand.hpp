@@ -55,6 +55,11 @@ namespace avm {
 			return new Operand<T>(fmod(std::stod(ToString()), std::stod(rhs.ToString())), m_type);
 		}
 
+		bool operator!=(IOperand const &rhs) const override
+		{
+			return GetType() != rhs.GetType() || ToString() != rhs.ToString();
+		}
+
 		String const &ToString() const override
 		{
 			return m_valueStr;

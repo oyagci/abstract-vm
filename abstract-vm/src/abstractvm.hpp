@@ -10,6 +10,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
+#include <variant>
+#include <stack>
 
 namespace avm {
 
@@ -80,6 +82,15 @@ namespace avm {
 		class T2
 	>
 	using Pair = std::pair<T1, T2>;
+
+	template <class... Types>
+	using Variant = std::variant<Types...>;
+
+	template <
+		class T,
+		class Container = std::deque<T>
+	>
+	using Stack = std::stack<T, Container>;
 
 	void Test();
 

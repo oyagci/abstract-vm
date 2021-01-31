@@ -1,3 +1,4 @@
+#pragma once
 #include "abstractvm.hpp"
 #include <fmt/format.h>
 #include <fstream>
@@ -142,15 +143,29 @@ namespace avm {
 				Scanner l_scanner(p_source);
 				List<Token> l_tokens = l_scanner.ScanTokens();
 
-				for (Token &l_t: l_tokens)
-				{
-					fmt::print("{}\n", l_t.ToString());
-				}
+				//for (Token &l_t: l_tokens)
+				//{
+				//	fmt::print("{}\n", l_t.ToString());
+				//}
+
+				s_tokens = l_tokens;
 			}
 
 			static void Error(int p_line, StringView p_message)
 			{
 				Report(p_line, "", p_message);
+			}
+
+			static void Error(Token p_token, String p_message)
+			{
+				if (p_token.m_type == TokenType::INPUT_STOP)
+				{
+					Report(p_token.m_line, "at end", p_message);
+				}
+				else
+				{
+					Report(p_token.m_line, " at '" + p_token.m_lexeme + "'", p_message);
+				}
 			}
 
 			static void Report(int p_line, StringView p_where, StringView p_message)
@@ -159,7 +174,11 @@ namespace avm {
 				s_hadError = true;
 			}
 
+			static bool HadError() { return s_hadError; }
+			static List<Token> const &GetTokens() { return s_tokens; }
+
 		private:
 			inline static bool s_hadError = false;
+			inline static List<Token> s_tokens;
 	};
 }

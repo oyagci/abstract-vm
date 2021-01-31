@@ -16,6 +16,8 @@ namespace avm {
 			ScanCurrentToken();
 		}
 
+		AddToken(TokenType::INPUT_STOP);
+
 		return m_tokens;
 	}
 
@@ -128,6 +130,10 @@ namespace avm {
 		if (l_tokenType != s_keywords.end())
 		{
 			AddToken(l_tokenType->second);
+		}
+		else
+		{
+			Lexer::Error(m_line, fmt::format("Unexpected Identifier: '{}'", l_text));
 		}
 	}
 
