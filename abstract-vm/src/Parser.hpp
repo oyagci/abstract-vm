@@ -63,6 +63,8 @@ namespace avm {
 
 			UniquePtr<ast::Instruction const> Instruction()
 			{
+				while (Match<TokenType::NEWLINE>()) {}
+
 				if (Match<TokenType::PUSH>() || Match<TokenType::ASSERT>())
 				{
 					Token const &l_instruction = Previous();
