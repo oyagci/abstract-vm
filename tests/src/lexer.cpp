@@ -97,7 +97,7 @@ TEST_F(LexerTest, Number)
 	Scanner l_scanner(l_source);
 	List<Token> l_tokens = l_scanner.ScanTokens();
 
-	ASSERT_EQ(l_tokens.size(), 7U);
+	ASSERT_EQ(l_tokens.size(), 7U + 1U);
 
 	for (size_t i = 0; i < l_tokens.size(); i++)
 	{

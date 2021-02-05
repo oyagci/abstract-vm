@@ -35,3 +35,13 @@ operands = executable('test-operands',
 
 
 test('operands', operands)
+
+parser_src = [ 'src/main.cpp', 'src/parser.cpp' ]
+parser = executable('test-parser',
+  parser_src,
+  include_directories: tests_incs,
+  link_with: abstractvm_lib,
+  dependencies: test_deps)
+
+
+test('parser', parser)
