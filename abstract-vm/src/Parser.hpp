@@ -44,6 +44,7 @@ namespace avm {
 						if (l_current != nullptr)
 						{
 							l_program->AddInstruction(std::move(l_current));
+							Match<TokenType::NEWLINE>();
 						}
 						else
 						{
@@ -141,6 +142,7 @@ namespace avm {
 
 					return MakeUnique<ast::Instruction>(l_type);
 				}
+
 
 				return nullptr;
 			}
@@ -267,32 +269,16 @@ namespace avm {
 			ParseError Error(Token p_token, String p_message) const
 			{
 				Lexer::Error(p_token, p_message);
-				return ParseError();
+				throw ParseError();
 			}
 
 			void Synchronize()
 			{
-				while (!IsAtEnd())
+				while (!IsAtEnd() && Peek().m_type != TokenType::NEWLINE)
 				{
-					switch (Peek().m_type)
-					{
-						case TokenType::PUSH:
-						case TokenType::POP:
-						case TokenType::DUMP:
-						case TokenType::ASSERT:
-						case TokenType::ADD:
-						case TokenType::SUB:
-						case TokenType::MUL:
-						case TokenType::DIV:
-						case TokenType::MOD:
-						case TokenType::PRINT:
-							return ;
-						default:
-							break;
-					}
-
 					Advance();
 				}
+				Advance();
 			}
 
 		private:

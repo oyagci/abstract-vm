@@ -96,6 +96,7 @@ namespace avm {
 			char IsAlphaNumeric(char);
 			void Identifier();
 			void Number();
+			void NewLine();
 
 		private:
 			String m_source;
