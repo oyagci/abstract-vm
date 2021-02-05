@@ -45,3 +45,14 @@ parser = executable('test-parser',
 
 
 test('parser', parser)
+
+
+precision_src = [ 'src/main.cpp', 'src/precision.cpp' ]
+precision = executable('test-precision',
+  precision_src,
+  include_directories: tests_incs,
+  link_with: abstractvm_lib,
+  dependencies: test_deps)
+
+
+test('precision', precision)
