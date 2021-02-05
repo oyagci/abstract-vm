@@ -47,6 +47,7 @@ namespace avm {
 				break;
 			case '\n':
 				m_line++;
+				NewLine();
 				break;
 			default:
 				if (IsAlpha(l_ch))
@@ -154,5 +155,12 @@ namespace avm {
 		}
 
 		AddToken(NUMBER, m_source.substr(m_start, m_current - m_start));
+	}
+
+	void Scanner::NewLine()
+	{
+		AddToken(NEWLINE);
+
+		while (!IsAtEnd() && Peek() == '\n') Advance();
 	}
 }

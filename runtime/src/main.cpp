@@ -23,7 +23,9 @@ int main(int ac, char *av[])
 			l_interpreter.Evaluate(*l_instruction);
 			l_instruction = l_program->GetNextInstruction();
 		}
+
+		return 0;
 	}
 
-	return 0;
+	return 1;
 }

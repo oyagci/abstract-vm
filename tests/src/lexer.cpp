@@ -57,18 +57,18 @@ TEST_F(LexerTest, AllInstructions)
 	List<Token> l_tokens = l_scanner.ScanTokens();
 
 	List<TokenType> l_expectedTokens = {
-		PUSH,  INT8, LPAREN, NUMBER, RPAREN,
-		PUSH, INT16, LPAREN, NUMBER, RPAREN,
-		PUSH, INT32, LPAREN, NUMBER, RPAREN,
-		POP,
-		ADD,
-		SUB,
-		DIV,
-		MOD,
-		PRINT,
-		EXIT,
-		ASSERT, NUMBER,
-		INPUT_STOP,
+		PUSH,  INT8, LPAREN, NUMBER, RPAREN, NEWLINE,
+		PUSH, INT16, LPAREN, NUMBER, RPAREN, NEWLINE,
+		PUSH, INT32, LPAREN, NUMBER, RPAREN, NEWLINE,
+		POP, NEWLINE,
+		ADD, NEWLINE,
+		SUB, NEWLINE,
+		DIV, NEWLINE,
+		MOD, NEWLINE,
+		PRINT, NEWLINE,
+		EXIT, NEWLINE,
+		ASSERT, NUMBER, NEWLINE,
+		INPUT_STOP, NEWLINE,
 	};
 
 	for (size_t i = 0; i < std::max(l_expectedTokens.size(), l_tokens.size()); i++)
@@ -97,7 +97,8 @@ TEST_F(LexerTest, Number)
 	Scanner l_scanner(l_source);
 	List<Token> l_tokens = l_scanner.ScanTokens();
 
-	ASSERT_EQ(l_tokens.size(), 7U + 1U);
+	// 7 Numbers, 6 Newlines, 1 InputStop
+	ASSERT_EQ(l_tokens.size(), 7U + 6U + 1U);
 
 	for (size_t i = 0; i < l_tokens.size(); i++)
 	{
@@ -105,6 +106,7 @@ TEST_F(LexerTest, Number)
 
 		ASSERT_EQ(NUMBER, l_actual);
 
+		l_tokens.pop_front();
 		l_tokens.pop_front();
 	}
 }
