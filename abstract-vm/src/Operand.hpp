@@ -4,15 +4,22 @@
 
 namespace avm {
 
+	class OperandBase : public IOperand
+	{
+	public:
+		virtual ~OperandBase() = default;
+		virtual IOperand const *From(String p_value) const = 0;
+	};
+
 	template <typename T>
-	class Operand : public IOperand
+	class Operand : public OperandBase
 	{
 	public:
 		Operand<T>(T p_value, OperandType p_type)
 			: m_value(p_value), m_type(p_type)
 		{
 			std::stringstream l_stream;
-			l_stream << std::fixed << std::setprecision(2) << (int)p_value;
+			l_stream << std::fixed << std::setprecision(2) << std::to_string(p_value);
 			m_valueStr = l_stream.str();
 		}
 
@@ -24,12 +31,22 @@ namespace avm {
 		{
 			ThrowIfOverflowUnderflowAdd(rhs);
 
+			if (rhs.GetPrecision() > GetPrecision())
+				return rhs + *this;
+
 			return new Operand<T>(std::stod(ToString()) + std::stod(rhs.ToString()), m_type);
 		}
 
 		IOperand const *operator-(IOperand const &rhs) const override
 		{
 			ThrowIfOverflowUnderflowSub(rhs);
+
+			if (rhs.GetPrecision() > GetPrecision())
+			{
+				OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
+				UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
+				return *l_lhs - rhs;
+			}
 
 			return new Operand<T>(std::stod(ToString()) - std::stod(rhs.ToString()), m_type);
 		}
@@ -38,6 +55,9 @@ namespace avm {
 		{
 			ThrowIfOverflowUnderflowMul(rhs);
 
+			if (rhs.GetPrecision() > GetPrecision())
+				return rhs * *this;
+
 			return new Operand<T>(std::stod(ToString()) * std::stod(rhs.ToString()), m_type);
 		}
 
@@ -45,12 +65,26 @@ namespace avm {
 		{
 			ThrowIfOverflowUnderflowDiv(rhs);
 
+			if (rhs.GetPrecision() > GetPrecision())
+			{
+				OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
+				UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
+				return *l_lhs / rhs;
+			}
+
 			return new Operand<T>(std::stod(ToString()) / std::stod(rhs.ToString()), m_type);
 		}
 
 		IOperand const *operator%(IOperand const &rhs) const override
 		{
 			ThrowIfOverflowUnderflowMod(rhs);
+
+			if (rhs.GetPrecision() > GetPrecision())
+			{
+				OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
+				UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
+				return *l_lhs % rhs;
+			}
 
 			return new Operand<T>(fmod(std::stod(ToString()), std::stod(rhs.ToString())), m_type);
 		}
@@ -63,6 +97,11 @@ namespace avm {
 		String const &ToString() const override
 		{
 			return m_valueStr;
+		}
+
+		IOperand const *From(String p_value) const override
+		{
+			return new Operand<T>(std::stod(p_value), m_type);
 		}
 
 		T MinLimit() const { return std::numeric_limits<T>::min(); }
