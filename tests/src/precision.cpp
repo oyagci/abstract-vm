@@ -4,7 +4,7 @@
 
 using namespace avm;
 
-TEST(Precision, FloatVsInt)
+TEST(Precision, Add_Float_Int)
 {
 	Interpreter l_interpreter;
 
@@ -12,7 +12,7 @@ TEST(Precision, FloatVsInt)
 		"push int8(1)\n"
 		"push float(42.42)\n"
 		"add\n"
-		"assert float(43)\n";
+		"assert float(43.00)\n";
 
 	Lexer l_lexer;
 	l_lexer.Run(l_input);
