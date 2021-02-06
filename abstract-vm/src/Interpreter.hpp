@@ -155,9 +155,9 @@ namespace avm {
 
 		void Dump() const
 		{
-			for (auto const &l_stackVal : m_stack)
+			for (auto l_stackVal = m_stack.rbegin(); l_stackVal != m_stack.rend(); l_stackVal++)
 			{
-				fmt::print("{}\n", l_stackVal->ToString());
+				fmt::print("{}\n", (*l_stackVal)->ToString());
 			}
 		}
 
