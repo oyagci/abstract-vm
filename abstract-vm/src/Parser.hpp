@@ -36,7 +36,7 @@ namespace avm {
 				auto l_program = MakeUnique<ast::Program>();
 
 				UniquePtr<ast::Instruction const> l_current = nullptr;
-				while (42)
+				do
 				{
 					try
 					{
@@ -44,11 +44,20 @@ namespace avm {
 						if (l_current != nullptr)
 						{
 							l_program->AddInstruction(std::move(l_current));
-							Match<TokenType::NEWLINE>();
 						}
 						else
 						{
 							break;
+						}
+
+						if (IsAtEnd())
+						{
+							break;
+						}
+						else if (!Match<TokenType::NEWLINE>())
+						{
+							Error(Peek(), "Expected newline");
+							throw ParseError();
 						}
 					}
 					catch (ParseError const &l_e)
@@ -57,6 +66,7 @@ namespace avm {
 					}
 
 				}
+				while (42);
 
 				return l_program;
 			}

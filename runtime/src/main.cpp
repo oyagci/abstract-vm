@@ -20,7 +20,15 @@ int main(int ac, char *av[])
 		auto l_instruction = l_program->GetNextInstruction();
 		while (l_instruction)
 		{
-			l_interpreter.Evaluate(*l_instruction);
+			try
+			{
+				l_interpreter.Evaluate(*l_instruction);
+			}
+			catch (std::exception const &e)
+			{
+				fmt::print("Fatal Error: {}\n", e.what());
+				break ;
+			}
 			l_instruction = l_program->GetNextInstruction();
 		}
 
