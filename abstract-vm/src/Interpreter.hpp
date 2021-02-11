@@ -61,25 +61,25 @@ namespace avm {
 
 		void VisitInstruction(ast::Instruction const &p_instruction) override
 		{
-			ast::Instruction::InstructionType const &l_type = p_instruction.GetType();
+			ast::Instruction::Type const &l_type = p_instruction.GetType();
 
 			UniquePtr<IOperand const> l_lhs = nullptr;
 			UniquePtr<IOperand const> l_rhs = nullptr;
 			IOperand const *l_result = nullptr;
 
-			static const UnorderedMap<ast::Instruction::InstructionType, std::function<IOperand const *(IOperand const &, IOperand const &)>>
+			static const UnorderedMap<ast::Instruction::Type, std::function<IOperand const *(IOperand const &, IOperand const &)>>
 				l_operandFnLookUp {
-				{ ast::Instruction::InstructionType::ADD, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs + p_rhs; } },
-				{ ast::Instruction::InstructionType::SUB, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs - p_rhs; } },
-				{ ast::Instruction::InstructionType::MUL, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs * p_rhs; } },
-				{ ast::Instruction::InstructionType::DIV, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs / p_rhs; } },
-				{ ast::Instruction::InstructionType::MOD, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs % p_rhs; } },
+				{ ast::Instruction::Type::ADD, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs + p_rhs; } },
+				{ ast::Instruction::Type::SUB, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs - p_rhs; } },
+				{ ast::Instruction::Type::MUL, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs * p_rhs; } },
+				{ ast::Instruction::Type::DIV, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs / p_rhs; } },
+				{ ast::Instruction::Type::MOD, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs % p_rhs; } },
 			};
-			static const UnorderedMap<ast::Instruction::InstructionType, std::function<void()>> l_operandLookUpNoParam {
-				{   ast::Instruction::InstructionType::POP,   [&] () { Pop(); }    },
-				{   ast::Instruction::InstructionType::DUMP,  [&] () { Dump(); }   },
-				{   ast::Instruction::InstructionType::PRINT, [&] () { Print(); }  },
-				{   ast::Instruction::InstructionType::EXIT,  [&] () { }           },
+			static const UnorderedMap<ast::Instruction::Type, std::function<void()>> l_operandLookUpNoParam {
+				{   ast::Instruction::Type::POP,   [&] () { Pop(); }    },
+				{   ast::Instruction::Type::DUMP,  [&] () { Dump(); }   },
+				{   ast::Instruction::Type::PRINT, [&] () { Print(); }  },
+				{   ast::Instruction::Type::EXIT,  [&] () { }           },
 			};
 
 			if (l_operandFnLookUp.find(l_type) != l_operandFnLookUp.end())
@@ -109,10 +109,10 @@ namespace avm {
 		{
 			switch (p_instruction.GetType())
 			{
-				case ast::Instruction::InstructionType::PUSH:
+				case ast::Instruction::Type::PUSH:
 					PushValueToStack(*p_instruction.GetValue());
 					break;
-				case ast::Instruction::InstructionType::ASSERT:
+				case ast::Instruction::Type::ASSERT:
 					Assert(*p_instruction.GetValue());
 					break;
 				default:
@@ -124,10 +124,10 @@ namespace avm {
 		OperandType StringToOperandType(String const &l_str) const
 		{
 			static const UnorderedMap<String, OperandType> l_lookUp {
-				{   "int8", OperandType::INT8   },
-				{  "int16", OperandType::INT16  },
-				{  "int32", OperandType::INT32  },
-				{  "float", OperandType::FLOAT  },
+				{ "int8",   OperandType::INT8   },
+				{ "int16",  OperandType::INT16  },
+				{ "int32",  OperandType::INT32  },
+				{ "float",  OperandType::FLOAT  },
 				{ "double", OperandType::DOUBLE },
 			};
 
