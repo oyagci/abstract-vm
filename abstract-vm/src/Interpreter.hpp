@@ -86,7 +86,7 @@ namespace avm {
 			{
 				if (m_stack.size() < 2)
 				{
-					throw InterpreterError();
+					throw EmptyStackError();
 				}
 
 				l_lhs = std::move(m_stack.back());
