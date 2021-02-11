@@ -28,7 +28,7 @@ TEST(Sanity, Simple_Push_Int8)
 	UniquePtr<const ast::Instruction> l_ins = l_program->GetNextInstruction();
 
 	ASSERT_NE(dynamic_cast<const ast::InstructionWithValue *>(l_ins.get()), nullptr);
-	ASSERT_EQ(l_ins->GetType(), ast::Instruction::InstructionType::PUSH);
+	ASSERT_EQ(l_ins->GetType(), ast::Instruction::Type::PUSH);
 }
 
 TEST(Parser, NewlineFirst)
@@ -46,5 +46,5 @@ TEST(Parser, NewlineFirst)
 	UniquePtr<const ast::Instruction> l_ins     = l_program->GetNextInstruction();
 
 	ASSERT_NE(dynamic_cast<const ast::InstructionWithValue *>(l_ins.get()), nullptr);
-	ASSERT_EQ(l_ins->GetType(), ast::Instruction::InstructionType::PUSH);
+	ASSERT_EQ(l_ins->GetType(), ast::Instruction::Type::PUSH);
 }

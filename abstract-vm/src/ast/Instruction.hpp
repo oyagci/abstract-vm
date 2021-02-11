@@ -50,7 +50,7 @@ namespace ast {
 	class Instruction : public InstructionVisitee
 	{
 	public:
-		enum class InstructionType
+		enum class Type
 		{
 			PUSH,
 			POP,
@@ -69,11 +69,11 @@ namespace ast {
 		virtual ~Instruction() {}
 
 		Instruction() = delete;
-		Instruction(InstructionType p_type) : m_type(p_type)
+		Instruction(Type p_type) : m_type(p_type)
 		{
 		}
 
-		InstructionType GetType() const { return m_type; }
+		Type GetType() const { return m_type; }
 
 		virtual void Print() const
 		{
@@ -86,14 +86,14 @@ namespace ast {
 		}
 
 	protected:
-		InstructionType const m_type;
+		Type const m_type;
 	};
 
 	class InstructionWithValue : public Instruction
 	{
 	public:
 		InstructionWithValue() = delete;
-		InstructionWithValue(Instruction::InstructionType p_type, UniquePtr<Value const> p_value)
+		InstructionWithValue(Instruction::Type p_type, UniquePtr<Value const> p_value)
 			: Instruction(p_type), m_value(std::move(p_value))
 		{
 		}

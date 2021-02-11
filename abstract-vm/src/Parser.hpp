@@ -74,11 +74,11 @@ namespace avm {
 					{
 						if (l_instruction.m_type == TokenType::PUSH)
 						{
-							return MakeUnique<ast::InstructionWithValue>(ast::Instruction::InstructionType::PUSH, std::move(l_value));
+							return MakeUnique<ast::InstructionWithValue>(ast::Instruction::Type::PUSH, std::move(l_value));
 						}
 						else if (l_instruction.m_type == TokenType::ASSERT)
 						{
-							return MakeUnique<ast::InstructionWithValue>(ast::Instruction::InstructionType::ASSERT, std::move(l_value));
+							return MakeUnique<ast::InstructionWithValue>(ast::Instruction::Type::ASSERT, std::move(l_value));
 						}
 						else
 						{
@@ -103,42 +103,31 @@ namespace avm {
 				{
 					Token const &l_instruction = Previous();
 
-					ast::Instruction::InstructionType l_type;
+					ast::Instruction::Type l_type;
 
-					switch (l_instruction.m_type)
+					UnorderedMap<TokenType, ast::Instruction::Type> l_lookUpTable {
+						{ TokenType::POP,   ast::Instruction::Type::POP   },
+						{ TokenType::DUMP,  ast::Instruction::Type::DUMP  },
+						{ TokenType::ADD,   ast::Instruction::Type::ADD   },
+						{ TokenType::SUB,   ast::Instruction::Type::SUB   },
+						{ TokenType::MUL,   ast::Instruction::Type::MUL   },
+						{ TokenType::DIV,   ast::Instruction::Type::DIV   },
+						{ TokenType::MOD,   ast::Instruction::Type::MOD   },
+						{ TokenType::PRINT, ast::Instruction::Type::PRINT },
+						{ TokenType::EXIT,  ast::Instruction::Type::EXIT  },
+					};
+
+					if (l_lookUpTable.find(l_instruction.m_type) != l_lookUpTable.end())
 					{
-					case TokenType::POP:
-						l_type = ast::Instruction::InstructionType::POP;
-						break;
-					case TokenType::DUMP:
-						l_type = ast::Instruction::InstructionType::DUMP;
-						break;
-					case TokenType::ADD:
-						l_type = ast::Instruction::InstructionType::ADD;
-						break;
-					case TokenType::SUB:
-						l_type = ast::Instruction::InstructionType::SUB;
-						break;
-					case TokenType::MUL:
-						l_type = ast::Instruction::InstructionType::MUL;
-						break;
-					case TokenType::DIV:
-						l_type = ast::Instruction::InstructionType::DIV;
-						break;
-					case TokenType::MOD:
-						l_type = ast::Instruction::InstructionType::MOD;
-						break;
-					case TokenType::PRINT:
-						l_type = ast::Instruction::InstructionType::PRINT;
-						break;
-					case TokenType::EXIT:
-						l_type = ast::Instruction::InstructionType::EXIT;
-						break;
-					case TokenType::PUSH:
-					case TokenType::ASSERT:
-						// Must not happen
+						l_type = l_lookUpTable.at(l_instruction.m_type);
+					}
+					else if (l_instruction.m_type == TokenType::PUSH ||
+							 l_instruction.m_type == TokenType::ASSERT)
+					{
 						throw std::runtime_error("Unreachable!");
-					default:
+					}
+					else
+					{
 						throw std::runtime_error("Unreachable!");
 					}
 
@@ -172,11 +161,11 @@ namespace avm {
 				return nullptr;
 			}
 
-			// Compile-time array with correct values
-			// Student project, just for learning, etc...
 			template <TokenType... Ts>
-			bool Match()
+			bool Match(TokenType &p_result)
 			{
+				p_result = TokenType::NONE;
+
 				Array<TokenType, sizeof...(Ts)> l_tokenTypes{ Ts... };
 
 				for (auto const &l_t : l_tokenTypes)
@@ -184,10 +173,21 @@ namespace avm {
 					if (Check(l_t))
 					{
 						Advance();
+						p_result = l_t;
 						return true;
 					}
 				}
 				return false;
+			}
+
+			// Compile-time array with correct values
+			// Student project, just for learning, etc...
+			template <TokenType... Ts>
+			bool Match()
+			{
+				TokenType l_result = TokenType::NONE;
+				(void)l_result;
+				return Match<Ts...>(l_result);
 			}
 
 			bool Check(TokenType p_type) const
