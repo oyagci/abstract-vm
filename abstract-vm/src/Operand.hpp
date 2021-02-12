@@ -1,8 +1,22 @@
 #include "IOperand.hpp"
 #include "OperandFactory.hpp"
 #include <fmt/format.h>
+#include <stdexcept>
 
 namespace avm {
+
+	class DivisionByZero : public std::runtime_error
+	{
+	public:
+		DivisionByZero() : std::runtime_error("Division by zero")
+		{
+		}
+
+		const char *what() const noexcept override
+		{
+			return "Division by zero";
+		}
+	};
 
 	class OperandBase : public IOperand
 	{
@@ -18,9 +32,7 @@ namespace avm {
 		Operand<T>(T p_value, OperandType p_type)
 			: m_value(p_value), m_type(p_type)
 		{
-			std::stringstream l_stream;
-			l_stream << std::fixed << std::setprecision(2) << std::to_string(p_value);
-			m_valueStr = l_stream.str();
+			m_valueStr = fmt::format("{}", p_value);
 		}
 
 		OperandType GetType() const override { return m_type; }
@@ -63,14 +75,18 @@ namespace avm {
 
 		IOperand const *operator/(IOperand const &rhs) const override
 		{
-			ThrowIfOverflowUnderflowDiv(rhs);
-
 			if (rhs.GetPrecision() > GetPrecision())
 			{
 				OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
 				UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
 				return *l_lhs / rhs;
 			}
+
+			Operand<T> const &l_rhs = dynamic_cast<Operand<T> const &>(rhs);
+			if (l_rhs.GetValue() == 0)
+				throw DivisionByZero();
+
+			ThrowIfOverflowUnderflowDiv(rhs);
 
 			return new Operand<T>(std::stod(ToString()) / std::stod(rhs.ToString()), m_type);
 		}
@@ -172,5 +188,23 @@ namespace avm {
 		OperandType m_type;
 		String m_valueStr;
 	};
+
+	template <>
+	Operand<float>::Operand(float p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	{
+		m_valueStr = fmt::format("{:.2f}", p_value);
+	}
+
+	template <>
+	Operand<double>::Operand(double p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	{
+		m_valueStr = fmt::format("{:.2}", p_value);
+	}
+
+	template <>
+	Operand<int8_t>::Operand(int8_t p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	{
+		m_valueStr = fmt::format("{}", (int)p_value);
+	}
 }
 
