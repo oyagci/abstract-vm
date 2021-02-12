@@ -32,9 +32,7 @@ namespace avm {
 		Operand<T>(T p_value, OperandType p_type)
 			: m_value(p_value), m_type(p_type)
 		{
-			std::stringstream l_stream;
-			l_stream << std::fixed << std::setprecision(2) << std::to_string(p_value);
-			m_valueStr = l_stream.str();
+			m_valueStr = fmt::format("{}", p_value);
 		}
 
 		OperandType GetType() const override { return m_type; }
@@ -190,5 +188,23 @@ namespace avm {
 		OperandType m_type;
 		String m_valueStr;
 	};
+
+	template <>
+	Operand<float>::Operand(float p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	{
+		m_valueStr = fmt::format("{:.2f}", p_value);
+	}
+
+	template <>
+	Operand<double>::Operand(double p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	{
+		m_valueStr = fmt::format("{:.2}", p_value);
+	}
+
+	template <>
+	Operand<int8_t>::Operand(int8_t p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	{
+		m_valueStr = fmt::format("{}", (int)p_value);
+	}
 }
 
