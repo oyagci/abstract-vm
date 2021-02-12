@@ -1,8 +1,22 @@
 #include "IOperand.hpp"
 #include "OperandFactory.hpp"
 #include <fmt/format.h>
+#include <stdexcept>
 
 namespace avm {
+
+	class DivisionByZero : public std::runtime_error
+	{
+	public:
+		DivisionByZero() : std::runtime_error("Division by zero")
+		{
+		}
+
+		const char *what() const noexcept override
+		{
+			return "Division by zero";
+		}
+	};
 
 	class OperandBase : public IOperand
 	{
@@ -63,14 +77,18 @@ namespace avm {
 
 		IOperand const *operator/(IOperand const &rhs) const override
 		{
-			ThrowIfOverflowUnderflowDiv(rhs);
-
 			if (rhs.GetPrecision() > GetPrecision())
 			{
 				OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
 				UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
 				return *l_lhs / rhs;
 			}
+
+			Operand<T> const &l_rhs = dynamic_cast<Operand<T> const &>(rhs);
+			if (l_rhs.GetValue() == 0)
+				throw DivisionByZero();
+
+			ThrowIfOverflowUnderflowDiv(rhs);
 
 			return new Operand<T>(std::stod(ToString()) / std::stod(rhs.ToString()), m_type);
 		}
