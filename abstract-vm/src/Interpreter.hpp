@@ -89,10 +89,10 @@ namespace avm {
 					throw EmptyStackError();
 				}
 
-				l_lhs = std::move(m_stack.back());
+				l_rhs = std::move(m_stack.back());
 				m_stack.pop_back();
 
-				l_rhs = std::move(m_stack.back());
+				l_lhs = std::move(m_stack.back());
 				m_stack.pop_back();
 
 				l_result = l_operandFnLookUp.at(l_type)(*l_lhs, *l_rhs);
