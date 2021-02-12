@@ -50,7 +50,7 @@ namespace avm {
 							break;
 						}
 
-						if (IsAtEnd())
+						if (IsAtEnd() || Match<TokenType::INPUT_STOP>())
 						{
 							break;
 						}
