@@ -127,11 +127,11 @@ namespace avm {
 		{
 			if ((std::stod(ToString()) + std::stod(rhs.ToString())) < MinLimit())
 			{
-				throw std::underflow_error(fmt::format("({} - {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+				throw std::underflow_error(fmt::format("({} + {}) < {}", ToString(), rhs.ToString(), MinLimit()));
 			}
 			else if ((std::stod(ToString()) + std::stod(rhs.ToString())) > MaxLimit())
 			{
-				throw std::overflow_error(fmt::format("({} - {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+				throw std::overflow_error(fmt::format("({} + {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
 			}
 		}
 
@@ -151,11 +151,11 @@ namespace avm {
 		{
 			if ((std::stod(ToString()) * std::stod(rhs.ToString())) < MinLimit())
 			{
-				throw std::underflow_error(fmt::format("({} - {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+				throw std::underflow_error(fmt::format("({} * {}) < {}", ToString(), rhs.ToString(), MinLimit()));
 			}
 			else if ((std::stod(ToString()) * std::stod(rhs.ToString())) > MaxLimit())
 			{
-				throw std::overflow_error(fmt::format("({} - {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+				throw std::overflow_error(fmt::format("({} * {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
 			}
 		}
 
@@ -163,11 +163,11 @@ namespace avm {
 		{
 			if ((std::stod(ToString()) / std::stod(rhs.ToString())) < MinLimit())
 			{
-				throw std::underflow_error(fmt::format("({} - {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+				throw std::underflow_error(fmt::format("({} / {}) < {}", ToString(), rhs.ToString(), MinLimit()));
 			}
 			else if ((std::stod(ToString()) / std::stod(rhs.ToString())) > MaxLimit())
 			{
-				throw std::overflow_error(fmt::format("({} - {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+				throw std::overflow_error(fmt::format("({} / {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
 			}
 		}
 
@@ -175,11 +175,11 @@ namespace avm {
 		{
 			if (fmod(std::stod(ToString()), std::stod(rhs.ToString())) < MinLimit())
 			{
-				throw std::underflow_error(fmt::format("({} - {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+				throw std::underflow_error(fmt::format("({} % {}) < {}", ToString(), rhs.ToString(), MinLimit()));
 			}
 			else if (fmod(std::stod(ToString()), std::stod(rhs.ToString())) > MaxLimit())
 			{
-				throw std::overflow_error(fmt::format("({} - {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+				throw std::overflow_error(fmt::format("({} % {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
 			}
 		}
 
