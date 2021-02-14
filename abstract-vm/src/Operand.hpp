@@ -120,8 +120,8 @@ namespace avm {
 			return new Operand<T>(std::stod(p_value), m_type);
 		}
 
-		T MinLimit() const { return std::numeric_limits<T>::min(); }
-		T MaxLimit() const { return std::numeric_limits<T>::max(); }
+		constexpr T MinLimit() const { return std::numeric_limits<T>::min(); }
+		constexpr T MaxLimit() const { return std::numeric_limits<T>::max(); }
 
 		void ThrowIfOverflowUnderflowAdd(IOperand const &rhs) const
 		{
