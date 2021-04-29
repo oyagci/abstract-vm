@@ -1,31 +1,10 @@
 #pragma once
 #include "../abstractvm.hpp"
 #include "../Lexer.hpp"
+#include "Value.hpp"
 
 namespace avm {
 namespace ast {
-
-	class Value
-	{
-	public:
-		Value(Token p_type, Token p_number) : m_type(p_type), m_number(p_number)
-		{
-		}
-
-		virtual ~Value() {}
-
-		Token const &GetType() const { return m_type; }
-		Token const &GetToken() const { return m_number; }
-
-		void Print() const
-		{
-			fmt::print("VALUE {} {}\n", m_type.m_lexeme, *m_number.m_literal);
-		}
-
-	private:
-		Token m_type;
-		Token m_number;
-	};
 
 	class Instruction;
 	class InstructionWithValue;
@@ -66,24 +45,18 @@ namespace ast {
 		};
 
 	public:
-		virtual ~Instruction() {}
-
 		Instruction() = delete;
-		Instruction(Type p_type) : m_type(p_type)
-		{
-		}
+		Instruction(Type p_type);
+		Instruction(const Instruction &) = delete;
+		virtual ~Instruction() = default;
 
-		Type GetType() const { return m_type; }
+		Instruction &operator=(const Instruction &) = delete;
 
-		virtual void Print() const
-		{
-			fmt::print("{}\n", m_type);
-		}
+		Type GetType() const;
 
-		void Accept(InstructionVisitor &p_visitor) const override
-		{
-			p_visitor.VisitInstruction(*this);
-		}
+		virtual void Print() const;
+
+		void Accept(InstructionVisitor &p_visitor) const override;
 
 	protected:
 		Type const m_type;
@@ -93,25 +66,18 @@ namespace ast {
 	{
 	public:
 		InstructionWithValue() = delete;
-		InstructionWithValue(Instruction::Type p_type, UniquePtr<Value const> p_value)
-			: Instruction(p_type), m_value(std::move(p_value))
-		{
-		}
+		InstructionWithValue(Instruction::Type p_type, UniquePtr<Value const> p_value);
+		InstructionWithValue(const InstructionWithValue &) = delete;
 
-		virtual ~InstructionWithValue() {}
+		InstructionWithValue &operator=(const InstructionWithValue &) = delete;
 
-		virtual Value const *GetValue() const { return m_value.get(); }
+		virtual ~InstructionWithValue() = default;
 
-		void Print() const override
-		{
-			fmt::print("{} ", m_type);
-			m_value->Print();
-		}
+		virtual Value const *GetValue() const;
 
-		void Accept(InstructionVisitor &p_visitor) const override
-		{
-			p_visitor.VisitInstructionWithValue(*this);
-		}
+		void Print() const override;
+
+		void Accept(InstructionVisitor &p_visitor) const override;
 
 	protected:
 		UniquePtr<Value const> m_value;
@@ -120,41 +86,20 @@ namespace ast {
 	class Program
 	{
 	public:
-		virtual ~Program() {}
+		Program() = default;
+		Program(const Program &) = delete;
+		virtual ~Program() = default;
 
-		void AddInstruction(UniquePtr<Instruction const> p_instruction)
-		{
-			m_instructions.push_back(std::move(p_instruction));
-		}
+		Program &operator=(const Program &) = delete;
 
-		UniquePtr<Instruction const> GetNextInstruction()
-		{
-			if (m_instructions.size() > 0)
-			{
-				auto l_ret = std::move(m_instructions.front());
+		void AddInstruction(UniquePtr<Instruction const> p_instruction);
 
-				m_instructions.pop_front();
+		UniquePtr<Instruction const> GetNextInstruction();
 
-				return l_ret;
-			}
-			else
-			{
-				return nullptr;
-			}
-		}
-
-		void Print() const
-		{
-			for (auto const &l_i : m_instructions)
-			{
-				fmt::print("Instruction\n\t");
-				l_i->Print();
-			}
-		}
+		void Print() const;
 
 	private:
 		List<UniquePtr<Instruction const>> m_instructions;
 	};
-
 }
 }
