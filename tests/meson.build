@@ -56,3 +56,13 @@ precision = executable('test-precision',
 
 
 test('precision', precision)
+
+programs_src = [ 'src/main.cpp', 'src/programs.cpp' ]
+programs = executable('test-programs',
+  programs_src,
+  include_directories: tests_incs,
+  link_with: abstractvm_lib,
+  dependencies: test_deps)
+
+
+test('programs', programs)
