@@ -1,8 +1,8 @@
 #include "Lexer.hpp"
 
 namespace avm {
-	Scanner::Scanner(StringView p_input)
-		: m_source(p_input), m_start(0), m_current(0), m_line(1)
+	Scanner::Scanner(Lexer &p_lexer, StringView p_input)
+		: m_lexer(p_lexer), m_source(p_input), m_start(0), m_current(0), m_line(1)
 	{
 	}
 
@@ -60,7 +60,7 @@ namespace avm {
 				}
 				else
 				{
-					Lexer::Error(m_line, fmt::format("Unexpected Character: '{}'", l_ch));
+					m_lexer.Error(m_line, fmt::format("Unexpected Character: '{}'", l_ch));
 				}
 				break;
 		}
@@ -134,7 +134,7 @@ namespace avm {
 		}
 		else
 		{
-			Lexer::Error(m_line, fmt::format("Unexpected Identifier: '{}'", l_text));
+			m_lexer.Error(m_line, fmt::format("Unexpected Identifier: '{}'", l_text));
 		}
 	}
 

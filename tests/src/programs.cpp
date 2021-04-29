@@ -11,9 +11,9 @@ int RunFromSrc(char const *const src)
 	l_lexer.Run(src);
 	fmt::print("{}", src);
 
-	if (!avm::Lexer::HadError())
+	if (!l_lexer.HadError())
 	{
-		avm::Parser l_parser(l_lexer.GetTokens());
+		avm::Parser l_parser(l_lexer, l_lexer.GetTokens());
 
 		auto l_program = l_parser.Run();
 
@@ -90,7 +90,7 @@ TEST(Program, EmptyStack)
 		"pop\n"
 		"exit\n";
 
-	ASSERT_EQ(RunFromSrc(l_source), 1);
+	ASSERT_THROW(RunFromSrc(l_source), avm::EmptyStackError);
 }
 
 TEST(Program, Assert)
@@ -100,7 +100,7 @@ TEST(Program, Assert)
 		"assert int32(0)\n"
 		"exit\n";
 
-	ASSERT_EQ(RunFromSrc(l_source), 1);
+	ASSERT_THROW(RunFromSrc(l_source), avm::AssertError);
 }
 
 TEST(Program, AddStackTooSmall)
@@ -110,7 +110,7 @@ TEST(Program, AddStackTooSmall)
 		"add\n"
 		"exit\n";
 
-	ASSERT_EQ(RunFromSrc(l_source), 1);
+	ASSERT_THROW(RunFromSrc(l_source), avm::EmptyStackError);
 }
 
 TEST(Program, Plop)

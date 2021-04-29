@@ -17,7 +17,7 @@ TEST(Precision, Add_Float_Int)
 	Lexer l_lexer;
 	l_lexer.Run(l_input);
 
-	Parser l_parser(l_lexer.GetTokens());
+	Parser l_parser(l_lexer, l_lexer.GetTokens());
 	auto l_program = l_parser.Run();
 
 	ASSERT_THROW({
