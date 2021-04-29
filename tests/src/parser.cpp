@@ -6,7 +6,8 @@ using namespace avm;
 
 TEST(Sanity, Empty)
 {
-	Parser l_p = Parser(List<Token>());
+	Lexer l_lexer;
+	Parser l_p = Parser(l_lexer, List<Token>());
 
 	UniquePtr<ast::Program> l_program = l_p.Run();
 	UniquePtr<const ast::Instruction> l_ins = l_program->GetNextInstruction();
@@ -16,7 +17,8 @@ TEST(Sanity, Empty)
 
 TEST(Sanity, Simple_Push_Int8)
 {
-	Parser l_p({
+	Lexer l_lexer;
+	Parser l_p(l_lexer, {
 		{ TokenType::PUSH,   "push", NullOpt, 1 },
 		{ TokenType::INT8,   "int8", NullOpt, 1 },
 		{ TokenType::LPAREN, "(",    NullOpt, 1 },
@@ -33,7 +35,8 @@ TEST(Sanity, Simple_Push_Int8)
 
 TEST(Parser, NewlineFirst)
 {
-	Parser l_p({
+	Lexer l_lexer;
+	Parser l_p(l_lexer, {
 		{ TokenType::NEWLINE, "",     NullOpt, 1 },
 		{ TokenType::PUSH,    "push", NullOpt, 2 },
 		{ TokenType::INT8,    "int8", NullOpt, 1 },

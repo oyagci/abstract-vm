@@ -35,7 +35,7 @@ int RunRepl()
 
 		l_lexer.Run(l_line + "\n");
 
-		avm::Parser l_parser(l_lexer.GetTokens());
+		avm::Parser l_parser(l_lexer, l_lexer.GetTokens());
 		avm::UniquePtr<avm::ast::Program> l_program = l_parser.Run();
 		avm::UniquePtr<const avm::ast::Instruction> l_instruction = l_program->GetNextInstruction();
 		while (l_instruction)
@@ -60,9 +60,9 @@ int RunFromFile(char const *const path)
 
 	l_lexer.RunFile(path);
 
-	if (!avm::Lexer::HadError())
+	if (!l_lexer.HadError())
 	{
-		avm::Parser l_parser(l_lexer.GetTokens());
+		avm::Parser l_parser(l_lexer, l_lexer.GetTokens());
 
 		auto l_program = l_parser.Run();
 

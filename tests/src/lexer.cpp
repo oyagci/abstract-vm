@@ -15,7 +15,8 @@ TEST_F(LexerTest, Program1)
 		"push int16(420)"
 		"push int32(0)";
 
-	Scanner l_scanner(l_source);
+	Lexer l_lexer;
+	Scanner l_scanner(l_lexer, l_source);
 	List<Token> l_tokens = l_scanner.ScanTokens();
 
 	List<TokenType> l_expectedTokens = {
@@ -53,7 +54,8 @@ TEST_F(LexerTest, AllInstructions)
 		";;\n"
 		"; this is a comment";
 
-	Scanner l_scanner(l_source);
+	Lexer l_lexer;
+	Scanner l_scanner(l_lexer, l_source);
 	List<Token> l_tokens = l_scanner.ScanTokens();
 
 	List<TokenType> l_expectedTokens = {
@@ -94,7 +96,8 @@ TEST_F(LexerTest, Number)
 		"-42\n"
 		"-0";
 
-	Scanner l_scanner(l_source);
+	Lexer l_lexer;
+	Scanner l_scanner(l_lexer, l_source);
 	List<Token> l_tokens = l_scanner.ScanTokens();
 
 	// 7 Numbers, 6 Newlines, 1 InputStop

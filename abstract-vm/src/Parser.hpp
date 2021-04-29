@@ -17,11 +17,13 @@ namespace avm {
 		}
 	};
 
+	class Lexer;
+
 	class Parser
 	{
 		public:
 			Parser() = delete;
-			Parser(List<Token> p_tokens) : m_tokens(p_tokens), m_current(0)
+			Parser(Lexer &p_lexer, List<Token> p_tokens) : m_lexer(p_lexer), m_tokens(p_tokens), m_current(0)
 			{
 			}
 
@@ -280,7 +282,7 @@ namespace avm {
 
 			ParseError Error(Token p_token, String p_message) const
 			{
-				Lexer::Error(p_token, p_message);
+				m_lexer.Error(p_token, p_message);
 				throw ParseError();
 			}
 
@@ -294,6 +296,7 @@ namespace avm {
 			}
 
 		private:
+			Lexer &m_lexer;
 			List<Token> m_tokens;
 			size_t m_current;
 	};

@@ -77,9 +77,11 @@ namespace avm {
 		}
 	};
 
+	class Lexer;
+
 	class Scanner {
 		public:
-			Scanner(StringView p_input);
+			Scanner(Lexer &p_lexer, StringView p_input);
 			List<Token> ScanTokens();
 
 		private:
@@ -99,6 +101,7 @@ namespace avm {
 			void NewLine();
 
 		private:
+			Lexer &m_lexer;
 			String m_source;
 			List<Token> m_tokens;
 
@@ -128,7 +131,15 @@ namespace avm {
 
 	class Lexer {
 		public:
-			static void RunFile(StringView p_path)
+			Lexer() = default;
+			Lexer(Lexer const &) = delete;
+			Lexer(Lexer const &&) = delete;
+
+			virtual ~Lexer() = default;
+
+			Lexer &operator=(Lexer const &) = delete;
+
+			void RunFile(StringView p_path)
 			{
 				std::fstream l_file;
 				l_file.open(std::string(p_path), std::ios::in);
@@ -139,9 +150,11 @@ namespace avm {
 				Run(l_stringStream.str());
 			}
 
-			static void Run(StringView p_source)
+			void Run(StringView p_source)
 			{
-				Scanner l_scanner(p_source);
+				s_hadError = false;
+
+				Scanner l_scanner(*this, p_source);
 				List<Token> l_tokens = l_scanner.ScanTokens();
 
 				//for (Token &l_t: l_tokens)
@@ -152,12 +165,12 @@ namespace avm {
 				s_tokens = l_tokens;
 			}
 
-			static void Error(int p_line, StringView p_message)
+			void Error(int p_line, StringView p_message)
 			{
 				Report(p_line, "", p_message);
 			}
 
-			static void Error(Token p_token, String p_message)
+			void Error(Token p_token, String p_message)
 			{
 				if (p_token.m_type == TokenType::INPUT_STOP)
 				{
@@ -169,17 +182,17 @@ namespace avm {
 				}
 			}
 
-			static void Report(int p_line, StringView p_where, StringView p_message)
+			void Report(int p_line, StringView p_where, StringView p_message)
 			{
 				fmt::print("[line {}] Error {}: {}\n", p_line, p_where, p_message);
 				s_hadError = true;
 			}
 
-			static bool HadError() { return s_hadError; }
-			static List<Token> const &GetTokens() { return s_tokens; }
+			bool HadError() { return s_hadError; }
+			List<Token> const &GetTokens() { return s_tokens; }
 
 		private:
-			inline static bool s_hadError = false;
-			inline static List<Token> s_tokens;
+			bool s_hadError = false;
+			List<Token> s_tokens;
 	};
 }
