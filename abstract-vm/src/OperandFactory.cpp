@@ -8,6 +8,12 @@
 
 namespace avm {
 
+	OperandFactory &OperandFactory::Get()
+	{
+		static OperandFactory l_instance;
+		return l_instance;
+	}
+
 	IOperand const *OperandFactory::CreateOperand(OperandType p_type, String const &p_value) const
 	{
 		static OperandFn l_operands[5] = {

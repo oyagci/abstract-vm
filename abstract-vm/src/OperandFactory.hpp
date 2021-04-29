@@ -9,11 +9,7 @@ namespace avm {
 		OperandFactory() = default;
 
 	public:
-		static OperandFactory &Get()
-		{
-			static OperandFactory l_instance;
-			return l_instance;
-		}
+		static OperandFactory &Get();
 
 		IOperand const *CreateOperand(OperandType p_type, String const &p_value) const;
 

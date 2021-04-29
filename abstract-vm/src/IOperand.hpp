@@ -6,14 +6,6 @@
 #include <iomanip>
 #include <cmath>
 
-#define IMPL_OPERAND(precision, type) \
-	String const ToString() const override \
-	{ \
-		return String(#type) + "(" + std::to_string(m_value) + ")"; \
-	} \
-	int GetPrecision() const override { return precision; }
-
-
 namespace avm {
 
 	/*
@@ -32,8 +24,9 @@ namespace avm {
 	{
 	public:
 		IOperand() = default;
-
 		virtual ~IOperand() {}
+
+		virtual IOperand &operator=(const IOperand &) = delete;
 
 		virtual OperandType GetType() const = 0;
 		virtual int GetPrecision() const = 0;
