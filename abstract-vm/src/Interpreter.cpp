@@ -2,6 +2,10 @@
 
 namespace avm {
 
+	Interpreter::~Interpreter()
+	{
+	}
+
 	bool Interpreter::Evaluate(ast::Instruction const &p_instruction)
 	{
 		if (m_shouldExit)
