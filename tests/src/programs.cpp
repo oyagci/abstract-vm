@@ -9,7 +9,6 @@ int RunFromSrc(char const *const src)
 	avm::Lexer l_lexer;
 
 	l_lexer.Run(src);
-	fmt::print("{}", src);
 
 	if (!l_lexer.HadError())
 	{
@@ -26,12 +25,8 @@ int RunFromSrc(char const *const src)
 			l_instruction = l_program->GetNextInstruction();
 		}
 
-		fmt::print("COOL\n");
-
 		return 0;
 	}
-
-	fmt::print("NOTCOOL\n");
 	return 1;
 }
 

@@ -2,9 +2,16 @@
 
 namespace avm {
 
-	void Interpreter::Evaluate(ast::Instruction const &p_instruction)
+	bool Interpreter::Evaluate(ast::Instruction const &p_instruction)
 	{
+		if (m_shouldExit)
+		{
+			return m_shouldExit;
+		}
+
 		p_instruction.Accept(*this);
+
+		return m_shouldExit;
 	}
 
 	void Interpreter::VisitInstruction(ast::Instruction const &p_instruction)
@@ -24,10 +31,10 @@ namespace avm {
 			{ ast::Instruction::Type::MOD, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs % p_rhs; } },
 		};
 		static const UnorderedMap<ast::Instruction::Type, std::function<void()>> l_operandLookUpNoParam {
-			{   ast::Instruction::Type::POP,   [&] () { Pop(); }    },
-			{   ast::Instruction::Type::DUMP,  [&] () { Dump(); }   },
-			{   ast::Instruction::Type::PRINT, [&] () { Print(); }  },
-			{   ast::Instruction::Type::EXIT,  [&] () { }           },
+			{ ast::Instruction::Type::POP,   [&] () { Pop(); }  },
+			{ ast::Instruction::Type::DUMP,  [&] () { Dump(); } },
+			{ ast::Instruction::Type::PRINT, [&] () { Print(); }},
+			{ ast::Instruction::Type::EXIT,  [&] () { Exit(); } },
 		};
 
 		if (l_operandFnLookUp.find(l_type) != l_operandFnLookUp.end())
@@ -68,27 +75,32 @@ namespace avm {
 		};
 	}
 
-	OperandType Interpreter::StringToOperandType(String const &l_str) const
+	bool Interpreter::HasExited() const
 	{
-		static const UnorderedMap<String, OperandType> l_lookUp {
-			{ "int8",   OperandType::INT8   },
-			{ "int16",  OperandType::INT16  },
-			{ "int32",  OperandType::INT32  },
-			{ "float",  OperandType::FLOAT  },
-			{ "double", OperandType::DOUBLE },
+		return m_shouldExit;
+	}
+
+	eOperandType Interpreter::StringToOperandType(String const &l_str) const
+	{
+		static const UnorderedMap<String, eOperandType> l_lookUp {
+			{ "int8",   eOperandType::INT8   },
+			{ "int16",  eOperandType::INT16  },
+			{ "int32",  eOperandType::INT32  },
+			{ "float",  eOperandType::FLOAT  },
+			{ "double", eOperandType::DOUBLE },
 		};
 
 		return l_lookUp.at(l_str);
 	}
 
-	OperandType Interpreter::TokenTypeToOperandType(TokenType p_type)
+	eOperandType Interpreter::TokenTypeToOperandType(TokenType p_type)
 	{
-		static const UnorderedMap<TokenType, OperandType> l_lookUp {
-			{ TokenType::INT8,   OperandType::INT8   },
-			{ TokenType::INT16,  OperandType::INT16  },
-			{ TokenType::INT32,  OperandType::INT32  },
-			{ TokenType::FLOAT,  OperandType::FLOAT  },
-			{ TokenType::DOUBLE, OperandType::DOUBLE },
+		static const UnorderedMap<TokenType, eOperandType> l_lookUp {
+			{ TokenType::INT8,   eOperandType::INT8   },
+			{ TokenType::INT16,  eOperandType::INT16  },
+			{ TokenType::INT32,  eOperandType::INT32  },
+			{ TokenType::FLOAT,  eOperandType::FLOAT  },
+			{ TokenType::DOUBLE, eOperandType::DOUBLE },
 		};
 
 		return l_lookUp.at(p_type);
@@ -117,7 +129,7 @@ namespace avm {
 	{
 		for (auto l_stackVal = m_stack.rbegin(); l_stackVal != m_stack.rend(); l_stackVal++)
 		{
-			fmt::print("{}\n", (*l_stackVal)->ToString());
+			fmt::print("{}\n", (*l_stackVal)->toString());
 		}
 	}
 
@@ -149,7 +161,7 @@ namespace avm {
 
 		UniquePtr<IOperand const> &l_assertion = m_stack.back();
 
-		if (TokenTypeToOperandType(p_value.GetType().m_type) != l_assertion->GetType())
+		if (TokenTypeToOperandType(p_value.GetType().m_type) != l_assertion->getType())
 		{
 			throw AssertError();
 		}
@@ -162,6 +174,11 @@ namespace avm {
 		{
 			throw AssertError();
 		}
+	}
+
+	void Interpreter::Exit()
+	{
+		m_shouldExit = true;
 	}
 
 	// Exceptions

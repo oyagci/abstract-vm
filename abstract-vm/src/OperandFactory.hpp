@@ -11,7 +11,7 @@ namespace avm {
 	public:
 		static OperandFactory &Get();
 
-		IOperand const *CreateOperand(OperandType p_type, String const &p_value) const;
+		IOperand const *CreateOperand(eOperandType p_type, String const &p_value) const;
 
 	private:
 		IOperand const *CreateInt8(String const &p_value) const;
