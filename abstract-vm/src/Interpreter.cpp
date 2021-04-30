@@ -80,27 +80,27 @@ namespace avm {
 		return m_shouldExit;
 	}
 
-	OperandType Interpreter::StringToOperandType(String const &l_str) const
+	eOperandType Interpreter::StringToOperandType(String const &l_str) const
 	{
-		static const UnorderedMap<String, OperandType> l_lookUp {
-			{ "int8",   OperandType::INT8   },
-			{ "int16",  OperandType::INT16  },
-			{ "int32",  OperandType::INT32  },
-			{ "float",  OperandType::FLOAT  },
-			{ "double", OperandType::DOUBLE },
+		static const UnorderedMap<String, eOperandType> l_lookUp {
+			{ "int8",   eOperandType::INT8   },
+			{ "int16",  eOperandType::INT16  },
+			{ "int32",  eOperandType::INT32  },
+			{ "float",  eOperandType::FLOAT  },
+			{ "double", eOperandType::DOUBLE },
 		};
 
 		return l_lookUp.at(l_str);
 	}
 
-	OperandType Interpreter::TokenTypeToOperandType(TokenType p_type)
+	eOperandType Interpreter::TokenTypeToOperandType(TokenType p_type)
 	{
-		static const UnorderedMap<TokenType, OperandType> l_lookUp {
-			{ TokenType::INT8,   OperandType::INT8   },
-			{ TokenType::INT16,  OperandType::INT16  },
-			{ TokenType::INT32,  OperandType::INT32  },
-			{ TokenType::FLOAT,  OperandType::FLOAT  },
-			{ TokenType::DOUBLE, OperandType::DOUBLE },
+		static const UnorderedMap<TokenType, eOperandType> l_lookUp {
+			{ TokenType::INT8,   eOperandType::INT8   },
+			{ TokenType::INT16,  eOperandType::INT16  },
+			{ TokenType::INT32,  eOperandType::INT32  },
+			{ TokenType::FLOAT,  eOperandType::FLOAT  },
+			{ TokenType::DOUBLE, eOperandType::DOUBLE },
 		};
 
 		return l_lookUp.at(p_type);
@@ -129,7 +129,7 @@ namespace avm {
 	{
 		for (auto l_stackVal = m_stack.rbegin(); l_stackVal != m_stack.rend(); l_stackVal++)
 		{
-			fmt::print("{}\n", (*l_stackVal)->ToString());
+			fmt::print("{}\n", (*l_stackVal)->toString());
 		}
 	}
 
@@ -161,7 +161,7 @@ namespace avm {
 
 		UniquePtr<IOperand const> &l_assertion = m_stack.back();
 
-		if (TokenTypeToOperandType(p_value.GetType().m_type) != l_assertion->GetType())
+		if (TokenTypeToOperandType(p_value.GetType().m_type) != l_assertion->getType())
 		{
 			throw AssertError();
 		}

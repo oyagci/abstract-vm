@@ -20,8 +20,8 @@ namespace avm {
 		bool HasExited() const;
 
 	private:
-		OperandType StringToOperandType(String const &l_str) const;
-		OperandType TokenTypeToOperandType(TokenType p_type);
+		eOperandType StringToOperandType(String const &l_str) const;
+		eOperandType TokenTypeToOperandType(TokenType p_type);
 
 		void PushValueToStack(ast::Value const &p_value);
 		void Pop();

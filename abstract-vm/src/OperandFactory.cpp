@@ -14,7 +14,7 @@ namespace avm {
 		return l_instance;
 	}
 
-	IOperand const *OperandFactory::CreateOperand(OperandType p_type, String const &p_value) const
+	IOperand const *OperandFactory::CreateOperand(eOperandType p_type, String const &p_value) const
 	{
 		static OperandFn l_operands[5] = {
 			&OperandFactory::CreateInt8,
@@ -32,7 +32,7 @@ namespace avm {
 
 		/*
 		decltype(l_operands)::const_iterator l_op = std::find_if(l_operands.begin(), l_operands.end(),
-			[p_type](Pair<OperandType, OperandFn> &l_pair) -> bool {
+			[p_type](Pair<eOperandType, OperandFn> &l_pair) -> bool {
 				return l_pair.first == p_type;
 			}
 		);
@@ -71,7 +71,7 @@ namespace avm {
 			throw std::underflow_error("Invalid Int16");
 		}
 
-		return new Operand<int8_t>(static_cast<int8_t>(l_res), OperandType::INT8);
+		return new Operand<int8_t>(static_cast<int8_t>(l_res), eOperandType::INT8);
 	}
 
 	IOperand const *OperandFactory::CreateInt16(String const &p_value) const
@@ -96,7 +96,7 @@ namespace avm {
 			throw std::underflow_error("Invalid Int16");
 		}
 
-		return new Operand<int16_t>(static_cast<int16_t>(l_res), OperandType::INT16);
+		return new Operand<int16_t>(static_cast<int16_t>(l_res), eOperandType::INT16);
 	}
 
 	IOperand const *OperandFactory::CreateInt32(String const &p_value) const
@@ -121,7 +121,7 @@ namespace avm {
 			throw std::underflow_error("Invalid Int32");
 		}
 
-		return new Operand<int32_t>(static_cast<int32_t>(l_res), OperandType::INT32);
+		return new Operand<int32_t>(static_cast<int32_t>(l_res), eOperandType::INT32);
 	}
 
 	IOperand const *OperandFactory::CreateFloat(String const &p_value) const
@@ -146,7 +146,7 @@ namespace avm {
 			throw std::underflow_error("Underflow Float");
 		}
 
-		return new Operand<float>(static_cast<float>(l_value), OperandType::FLOAT);
+		return new Operand<float>(static_cast<float>(l_value), eOperandType::FLOAT);
 	}
 
 	IOperand const *OperandFactory::CreateDouble(String const &p_value) const
@@ -170,6 +170,6 @@ namespace avm {
 			throw std::underflow_error("Invalid Double");
 		}
 
-		return new Operand<double>(static_cast<double>(l_value), OperandType::DOUBLE);
+		return new Operand<double>(static_cast<double>(l_value), eOperandType::DOUBLE);
 	}
 }

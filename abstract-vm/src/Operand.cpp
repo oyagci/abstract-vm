@@ -3,38 +3,38 @@
 namespace avm {
 
 	template <typename T>
-	Operand<T>::Operand(T p_value, OperandType p_type)
+	Operand<T>::Operand(T p_value, eOperandType p_type)
 		: m_value(p_value), m_type(p_type)
 	{
 		m_valueStr = fmt::format("{}", p_value);
 	}
 
 	template <>
-	Operand<int>::Operand(int p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	Operand<int>::Operand(int p_value, eOperandType p_type) : m_value(p_value), m_type(p_type)
 	{
 		m_valueStr = fmt::format("{}", p_value);
 	}
 
 	template <>
-	Operand<int16_t>::Operand(short p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	Operand<int16_t>::Operand(short p_value, eOperandType p_type) : m_value(p_value), m_type(p_type)
 	{
 		m_valueStr = fmt::format("{}", p_value);
 	}
 
 	template <>
-	Operand<float>::Operand(float p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	Operand<float>::Operand(float p_value, eOperandType p_type) : m_value(p_value), m_type(p_type)
 	{
 		m_valueStr = fmt::format("{:.2f}", p_value);
 	}
 
 	template <>
-	Operand<double>::Operand(double p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	Operand<double>::Operand(double p_value, eOperandType p_type) : m_value(p_value), m_type(p_type)
 	{
 		m_valueStr = fmt::format("{:.2}", p_value);
 	}
 
 	template <>
-	Operand<int8_t>::Operand(int8_t p_value, OperandType p_type) : m_value(p_value), m_type(p_type)
+	Operand<int8_t>::Operand(int8_t p_value, eOperandType p_type) : m_value(p_value), m_type(p_type)
 	{
 		m_valueStr = fmt::format("{}", (int)p_value);
 	}
@@ -50,13 +50,13 @@ namespace avm {
 	}
 
 	template <typename T>
-	OperandType Operand<T>::GetType() const
+	eOperandType Operand<T>::getType() const
 	{
 		return m_type;
 	}
 
 	template <typename T>
-	int Operand<T>::GetPrecision() const
+	int Operand<T>::getPrecision() const
 	{
 		return (int)m_type;
 	}
@@ -72,10 +72,10 @@ namespace avm {
 	{
 		ThrowIfOverflowUnderflowAdd(rhs);
 
-		if (rhs.GetPrecision() > GetPrecision())
+		if (rhs.getPrecision() > getPrecision())
 			return rhs + *this;
 
-		return new Operand<T>(std::stod(ToString()) + std::stod(rhs.ToString()), m_type);
+		return new Operand<T>(std::stod(toString()) + std::stod(rhs.toString()), m_type);
 	}
 
 	template <typename T>
@@ -83,14 +83,14 @@ namespace avm {
 	{
 		ThrowIfOverflowUnderflowSub(rhs);
 
-		if (rhs.GetPrecision() > GetPrecision())
+		if (rhs.getPrecision() > getPrecision())
 		{
 			OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
-			UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
+			UniquePtr<IOperand const> l_lhs(l_rhsBase.From(toString()));
 			return *l_lhs - rhs;
 		}
 
-		return new Operand<T>(std::stod(ToString()) - std::stod(rhs.ToString()), m_type);
+		return new Operand<T>(std::stod(toString()) - std::stod(rhs.toString()), m_type);
 	}
 
 	template <typename T>
@@ -98,19 +98,19 @@ namespace avm {
 	{
 		ThrowIfOverflowUnderflowMul(rhs);
 
-		if (rhs.GetPrecision() > GetPrecision())
+		if (rhs.getPrecision() > getPrecision())
 			return rhs * *this;
 
-		return new Operand<T>(std::stod(ToString()) * std::stod(rhs.ToString()), m_type);
+		return new Operand<T>(std::stod(toString()) * std::stod(rhs.toString()), m_type);
 	}
 
 	template <typename T>
 	IOperand const *Operand<T>::operator/(IOperand const &rhs) const
 	{
-		if (rhs.GetPrecision() > GetPrecision())
+		if (rhs.getPrecision() > getPrecision())
 		{
 			OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
-			UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
+			UniquePtr<IOperand const> l_lhs(l_rhsBase.From(toString()));
 			return *l_lhs / rhs;
 		}
 
@@ -120,7 +120,7 @@ namespace avm {
 
 		ThrowIfOverflowUnderflowDiv(rhs);
 
-		return new Operand<T>(std::stod(ToString()) / std::stod(rhs.ToString()), m_type);
+		return new Operand<T>(std::stod(toString()) / std::stod(rhs.toString()), m_type);
 	}
 
 	template <typename T>
@@ -128,24 +128,24 @@ namespace avm {
 	{
 		ThrowIfOverflowUnderflowMod(rhs);
 
-		if (rhs.GetPrecision() > GetPrecision())
+		if (rhs.getPrecision() > getPrecision())
 		{
 			OperandBase const &l_rhsBase = dynamic_cast<OperandBase const &>(rhs);
-			UniquePtr<IOperand const> l_lhs(l_rhsBase.From(ToString()));
+			UniquePtr<IOperand const> l_lhs(l_rhsBase.From(toString()));
 			return *l_lhs % rhs;
 		}
 
-		return new Operand<T>(fmod(std::stod(ToString()), std::stod(rhs.ToString())), m_type);
+		return new Operand<T>(fmod(std::stod(toString()), std::stod(rhs.toString())), m_type);
 	}
 
 	template <typename T>
 	bool Operand<T>::operator!=(IOperand const &rhs) const
 	{
-		return GetType() != rhs.GetType() || ToString() != rhs.ToString();
+		return getType() != rhs.getType() || toString() != rhs.toString();
 	}
 
 	template <typename T>
-	String const &Operand<T>::ToString() const
+	String const &Operand<T>::toString() const
 	{
 		return m_valueStr;
 	}
@@ -171,65 +171,65 @@ namespace avm {
 	template <typename T>
 	void Operand<T>::ThrowIfOverflowUnderflowAdd(IOperand const &rhs) const
 	{
-		if ((std::stod(ToString()) + std::stod(rhs.ToString())) < MinLimit())
+		if ((std::stod(toString()) + std::stod(rhs.toString())) < MinLimit())
 		{
-			throw std::underflow_error(fmt::format("({} + {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+			throw std::underflow_error(fmt::format("({} + {}) < {}", toString(), rhs.toString(), MinLimit()));
 		}
-		else if ((std::stod(ToString()) + std::stod(rhs.ToString())) > MaxLimit())
+		else if ((std::stod(toString()) + std::stod(rhs.toString())) > MaxLimit())
 		{
-			throw std::overflow_error(fmt::format("({} + {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+			throw std::overflow_error(fmt::format("({} + {}) > {}", toString(), rhs.toString(), MaxLimit()));
 		}
 	}
 
 	template <typename T>
 	void Operand<T>::ThrowIfOverflowUnderflowSub(IOperand const &rhs) const
 	{
-		if ((std::stod(ToString()) - std::stod(rhs.ToString())) < MinLimit())
+		if ((std::stod(toString()) - std::stod(rhs.toString())) < MinLimit())
 		{
-			throw std::underflow_error(fmt::format("({} - {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+			throw std::underflow_error(fmt::format("({} - {}) < {}", toString(), rhs.toString(), MinLimit()));
 		}
-		else if ((std::stod(ToString()) - std::stod(rhs.ToString())) > MaxLimit())
+		else if ((std::stod(toString()) - std::stod(rhs.toString())) > MaxLimit())
 		{
-			throw std::overflow_error(fmt::format("({} - {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+			throw std::overflow_error(fmt::format("({} - {}) > {}", toString(), rhs.toString(), MaxLimit()));
 		}
 	}
 
 	template <typename T>
 	void Operand<T>::ThrowIfOverflowUnderflowMul(IOperand const &rhs) const
 	{
-		if ((std::stod(ToString()) * std::stod(rhs.ToString())) < MinLimit())
+		if ((std::stod(toString()) * std::stod(rhs.toString())) < MinLimit())
 		{
-			throw std::underflow_error(fmt::format("({} * {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+			throw std::underflow_error(fmt::format("({} * {}) < {}", toString(), rhs.toString(), MinLimit()));
 		}
-		else if ((std::stod(ToString()) * std::stod(rhs.ToString())) > MaxLimit())
+		else if ((std::stod(toString()) * std::stod(rhs.toString())) > MaxLimit())
 		{
-			throw std::overflow_error(fmt::format("({} * {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+			throw std::overflow_error(fmt::format("({} * {}) > {}", toString(), rhs.toString(), MaxLimit()));
 		}
 	}
 
 	template <typename T>
 	void Operand<T>::ThrowIfOverflowUnderflowDiv(IOperand const &rhs) const
 	{
-		if ((std::stod(ToString()) / std::stod(rhs.ToString())) < MinLimit())
+		if ((std::stod(toString()) / std::stod(rhs.toString())) < MinLimit())
 		{
-			throw std::underflow_error(fmt::format("({} / {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+			throw std::underflow_error(fmt::format("({} / {}) < {}", toString(), rhs.toString(), MinLimit()));
 		}
-		else if ((std::stod(ToString()) / std::stod(rhs.ToString())) > MaxLimit())
+		else if ((std::stod(toString()) / std::stod(rhs.toString())) > MaxLimit())
 		{
-			throw std::overflow_error(fmt::format("({} / {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+			throw std::overflow_error(fmt::format("({} / {}) > {}", toString(), rhs.toString(), MaxLimit()));
 		}
 	}
 
 	template <typename T>
 	void Operand<T>::ThrowIfOverflowUnderflowMod(IOperand const &rhs) const
 	{
-		if (fmod(std::stod(ToString()), std::stod(rhs.ToString())) < MinLimit())
+		if (fmod(std::stod(toString()), std::stod(rhs.toString())) < MinLimit())
 		{
-			throw std::underflow_error(fmt::format("({} % {}) < {}", ToString(), rhs.ToString(), MinLimit()));
+			throw std::underflow_error(fmt::format("({} % {}) < {}", toString(), rhs.toString(), MinLimit()));
 		}
-		else if (fmod(std::stod(ToString()), std::stod(rhs.ToString())) > MaxLimit())
+		else if (fmod(std::stod(toString()), std::stod(rhs.toString())) > MaxLimit())
 		{
-			throw std::overflow_error(fmt::format("({} % {}) > {}", ToString(), rhs.ToString(), MaxLimit()));
+			throw std::overflow_error(fmt::format("({} % {}) > {}", toString(), rhs.toString(), MaxLimit()));
 		}
 	}
 

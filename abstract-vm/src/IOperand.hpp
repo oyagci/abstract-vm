@@ -11,7 +11,7 @@ namespace avm {
 	/*
 	 * IMPORTANT: Keep enum values ordered by precision and incremental
 	 */
-	enum class OperandType : size_t
+	enum class eOperandType : size_t
 	{
 		INT8   = 0,
 		INT16  = 1,
@@ -28,8 +28,8 @@ namespace avm {
 
 		virtual IOperand &operator=(const IOperand &) = delete;
 
-		virtual OperandType GetType() const = 0;
-		virtual int GetPrecision() const = 0;
+		virtual eOperandType getType() const = 0;
+		virtual int getPrecision() const = 0;
 
 		virtual IOperand const *operator+(IOperand const &rhs) const = 0;
 		virtual IOperand const *operator-(IOperand const &rhs) const = 0;
@@ -38,6 +38,6 @@ namespace avm {
 		virtual IOperand const *operator%(IOperand const &rhs) const = 0;
 		virtual bool           operator!=(IOperand const &rhs) const = 0;
 
-		virtual String const &ToString() const = 0;
+		virtual std::string const &toString() const = 0;
 	};
 }
