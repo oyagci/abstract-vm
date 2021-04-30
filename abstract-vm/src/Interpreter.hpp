@@ -9,7 +9,7 @@ namespace avm {
 	public:
 		Interpreter() = default;
 		Interpreter(const Interpreter &) = delete;
-		virtual ~Interpreter() = default;
+		virtual ~Interpreter();
 
 		Interpreter &operator=(const Interpreter &) = delete;
 
