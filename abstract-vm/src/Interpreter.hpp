@@ -13,9 +13,11 @@ namespace avm {
 
 		Interpreter &operator=(const Interpreter &) = delete;
 
-		void Evaluate(ast::Instruction const &p_instruction);
+		bool Evaluate(ast::Instruction const &p_instruction);
 		void VisitInstruction(ast::Instruction const &p_instruction) override;
 		void VisitInstructionWithValue(ast::InstructionWithValue const &p_instruction) override;
+
+		bool HasExited() const;
 
 	private:
 		OperandType StringToOperandType(String const &l_str) const;
@@ -26,9 +28,11 @@ namespace avm {
 		void Dump() const;
 		void Print() const;
 		void Assert(ast::Value const &p_value);
+		void Exit();
 
 	private:
 		Vector<UniquePtr<IOperand const>> m_stack;
+		bool m_shouldExit = false;
 	};
 
 	// Exceptions

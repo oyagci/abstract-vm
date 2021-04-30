@@ -20,7 +20,7 @@ int RunRepl()
 	avm::Lexer l_lexer;
 	avm::Interpreter l_interpreter;
 
-	while (true)
+	while (!l_interpreter.HasExited())
 	{
 		// Print prompt
 		fmt::print("> ");
@@ -38,11 +38,14 @@ int RunRepl()
 		avm::Parser l_parser(l_lexer, l_lexer.GetTokens());
 		avm::UniquePtr<avm::ast::Program> l_program = l_parser.Run();
 		avm::UniquePtr<const avm::ast::Instruction> l_instruction = l_program->GetNextInstruction();
-		while (l_instruction)
+		while (l_instruction && !l_interpreter.HasExited())
 		{
 			try
 			{
-				l_interpreter.Evaluate(*l_instruction);
+				if (l_interpreter.Evaluate(*l_instruction))
+				{
+					break;
+				}
 			}
 			catch (std::exception const &e)
 			{
@@ -73,7 +76,10 @@ int RunFromFile(char const *const path)
 		{
 			try
 			{
-				l_interpreter.Evaluate(*l_instruction);
+				if (l_interpreter.Evaluate(*l_instruction))
+				{
+					break;
+				}
 			}
 			catch (std::exception const &e)
 			{

@@ -2,9 +2,16 @@
 
 namespace avm {
 
-	void Interpreter::Evaluate(ast::Instruction const &p_instruction)
+	bool Interpreter::Evaluate(ast::Instruction const &p_instruction)
 	{
+		if (m_shouldExit)
+		{
+			return m_shouldExit;
+		}
+
 		p_instruction.Accept(*this);
+
+		return m_shouldExit;
 	}
 
 	void Interpreter::VisitInstruction(ast::Instruction const &p_instruction)
@@ -24,10 +31,10 @@ namespace avm {
 			{ ast::Instruction::Type::MOD, [] (IOperand const &p_lhs, IOperand const &p_rhs) { return p_lhs % p_rhs; } },
 		};
 		static const UnorderedMap<ast::Instruction::Type, std::function<void()>> l_operandLookUpNoParam {
-			{   ast::Instruction::Type::POP,   [&] () { Pop(); }    },
-			{   ast::Instruction::Type::DUMP,  [&] () { Dump(); }   },
-			{   ast::Instruction::Type::PRINT, [&] () { Print(); }  },
-			{   ast::Instruction::Type::EXIT,  [&] () { }           },
+			{ ast::Instruction::Type::POP,   [&] () { Pop(); }  },
+			{ ast::Instruction::Type::DUMP,  [&] () { Dump(); } },
+			{ ast::Instruction::Type::PRINT, [&] () { Print(); }},
+			{ ast::Instruction::Type::EXIT,  [&] () { Exit(); } },
 		};
 
 		if (l_operandFnLookUp.find(l_type) != l_operandFnLookUp.end())
@@ -66,6 +73,11 @@ namespace avm {
 			default:
 				throw std::runtime_error("Unreachable!");
 		};
+	}
+
+	bool Interpreter::HasExited() const
+	{
+		return m_shouldExit;
 	}
 
 	OperandType Interpreter::StringToOperandType(String const &l_str) const
@@ -162,6 +174,11 @@ namespace avm {
 		{
 			throw AssertError();
 		}
+	}
+
+	void Interpreter::Exit()
+	{
+		m_shouldExit = true;
 	}
 
 	// Exceptions
